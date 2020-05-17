@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>企业查询</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link rel="stylesheet" type="text/css" href="static/css/style.css">
+</head>
+<body>
+
+<div style="margin-left: 10%;margin-top: 60px">
+    <form method="post" id="form">
+        {{ form.csrf_token() }}
+        <h1>输入企业名：</h1>
+        <textarea id="entname" name="entname" class="ent-input" placeholder="输入多个企业名，用分号或换行隔开"
+        ></textarea>
+
+        <button id="submit" name="submit" type="submit" class="button button--secondary">
+            <span class="button__inner">Submit</span>
+        </button>
+
+    </form>
+</div>
+
+<div style="margin-left: 10%">
+    {% for id,ent in ents %}
+    <div class="enttable">
+        <div style="position: absolute;font-size: 1.3em;font-family: 微软雅黑;margin-left: 25px">
+            企业：{{ent.entname}}
+        </div>
+        <div style="margin-top: 35px">
+            <table class="container">
+                <tbody>
+                {% for _,(i,j) in ent.capacity: %}
+                <tr>
+                    <td>{{i}}</td>
+                    <td>{{j}}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <div class="chart" value="{{ent.cluster}}" id="{{id}}"></div>
+    {% endfor %}
+</div>
+<script src="static/js/echarts.min.js"></script>
+<script src="static/js/index.js"></script>
+<script>
+    var charts = document.getElementsByClassName("chart");
+
+    for (var i = 0; i < charts.length; i++) {
+        tmp = i.toString();
+        var cluster = document.getElementById(tmp).getAttribute("value");
+        console.log(Array(data[cluster]));
+        var myChart = echarts.init(document.getElementById(tmp));
+
+        var rgba = randomRgbColor();
+        option.series[0].itemStyle.normal.color = rgba;
+        option.series[0].itemStyle.normal.borderColor = rgba;
+        option.series[0].areaStyle.normal.color = rgba;
+        option.series[0].lineStyle.normal.color = rgba;
+        console.log(option.series[0].data);
+        option.series[0].data=Array(data[cluster]);
+        myChart.setOption(option);
+    }
+</script>
+</body>
+</html>
